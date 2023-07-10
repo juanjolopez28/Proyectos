@@ -7,7 +7,7 @@ app =FastAPI()
 
 # http://127.0.0.1:8000
 # la ruta raiz
-df_db = pd.read_csv('/home/juanjo/Proyectos/Proyecto_Henry01/API/data.csv',delimiter=',',header='infer')
+df_db = pd.read_csv('~/Proyectos/Proyecto_Henry01/API/data.csv',delimiter=',',header='infer')
 print(list(df_db.columns))
 
 @app.get("/")
