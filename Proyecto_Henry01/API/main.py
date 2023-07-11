@@ -3,6 +3,13 @@ import pandas as pd
 from datetime import datetime
 import ast
 import os
+
+import re
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+from nltk.stem.porter import PorterStemmer
+
 app =FastAPI()
 
 # http://127.0.0.1:8000
@@ -13,13 +20,27 @@ print(list(df_db.columns))
 
 @app.get("/")
 def index():
-     return {"message":"Hola Hola"}
+     return {"message":"Bienvenido, no olvides colocar en la url /docs :3"}
 
 # #@app.get("/libros/{id}") 
 # def mostrar_libro(id : int):# podemos espeficicar el tipo de dato
 #     return {"data":id}  
     
 
+porter_stemmer = PorterStemmer()
+
+def stemming_tokenizer(str_input):
+    # Eliminar signos de puntuación
+
+    str_input=re.sub(r"[^\w\s]", "", str_input)
+    # Eliminar números    
+    str_input = re.sub(r"\d+", "", str_input)
+    
+    words = re.sub(r"[^A-Za-z0-9\-]", " ", str_input).lower().split()
+    words = [word for word in words if len(word) > 1]
+    words = [word.strip() for word in words]
+    words = [porter_stemmer.stem(word) for word in words]
+    return words
 
 '''Ingresas el idioma, retornando la cantidad de peliculas producidas en el mismo'''
 #    return {'idioma':idioma, 'cantidad':respuesta}
@@ -111,58 +132,37 @@ def get_director(nombre_director:str):
     print(nombre_director,retorno_total, lista_peliculas,lista_fechas,lista_retorno,lista_budget,lista_revenue)
     return {'director':nombre_director, 'retorno_total_director':retorno_total,'peliculas':lista_peliculas, 'anio':lista_fechas, 'retorno_pelicula':lista_retorno,'budget_pelicula':lista_budget, 'revenue_pelicula':lista_revenue}
 
+#Se ingresa el nombre de una película y te recomienda las similares en una lista de 5 valores.
+@app.get('/recomendacion/{nombre_pelicula}')
+def recomendacion( titulo:str ): 
+    #Solo utilizamos la columna title
+    datos = df_db
+    
+    datos['title']=datos['title'].str.lower()
+    datos = datos.dropna(subset=['title'])
+    corpus =datos['title'].tolist()
+  
+    #Realizamos nuestra matrix tfidf
+
+    tfidf_vectorizer = TfidfVectorizer(stop_words='english', tokenizer=stemming_tokenizer, use_idf=True)
+    tfidf_matrix = tfidf_vectorizer.fit_transform(corpus)
+    #nuestra query la convertirmos en una array para la comparación
+    query_vector = tfidf_vectorizer.transform([titulo])
+    print(query_vector.toarray())
+    similarities = cosine_similarity(query_vector, tfidf_matrix)
+    #Primero vemos si la pelicula no está, si está no se considera en el indice de busqueda y si no igual se busca los mas parecidos
+    try:
+        toy_index = corpus.index(titulo)
+        top_indices = similarities.argsort()[0][::-1][:6]
+        top_indices=top_indices[1:6]
+    except:
+        top_indices = similarities.argsort()[0][::-1][:5]
+
+    print(top_indices)
+    resultado=[]
+    for index in top_indices:
+        resultado.append(corpus[index])
+    print(resultado)
+    return {'Peliculas recomendadas': resultado}
 
 
-#     ''' Se ingresa el nombre de un director que se encuentre dentro de un dataset debiendo devolver el éxito del mismo medido a través del retorno. 
-#     Además, deberá devolver el nombre de cada película con la fecha de lanzamiento, retorno individual, costo y ganancia de la misma. En formato lista'''
-#     return {'director':nombre_director, 'retorno_total_director':respuesta, 
-#     'peliculas':respuesta, 'anio':respuesta,, 'retorno_pelicula':respuesta, 
-#     'budget_pelicula':respuesta, 'revenue_pelicula':respuesta}'''
-
-#if __name__ == "__main__":
-    #cargar_base()
-    #pelicula_idioma("es")
-    #peliculas_duracion("Toy Story")
-    #franquicia("Toy Story Collection")
-    #peliculas_pais("""Cote D'Ivoire""")
-    #productoras_exitosas("Touchstone Pictures")
-    #get_director("Howard Deutch")
-    #get_director("John Lasseter")
-
-
-#@app.get('/peliculas_idioma/{idioma}')
-# def peliculas_idioma(idioma:str):
-#    '''Ingresas el idioma, retornando la cantidad de peliculas producidas en el mismo'''
-#    return {'idioma':idioma, 'cantidad':respuesta}
-
-
-# @app.get('/peliculas_duracion/{pelicula}')
-# def peliculas_duracion(pelicula:str):
-#     '''Ingresas la pelicula, retornando la duracion y el año'''
-#     return {'pelicula':pelicula, 'duracion':respuesta, 'anio':anio}
-
-
-
-# @app.get('/franquicia/{franquicia}')
-# def franquicia(franquicia:str):
-#     '''Se ingresa la franquicia, retornando la cantidad de peliculas, ganancia total y promedio'''
-#     return {'franquicia':franquicia, 'cantidad':respuesta, 'ganancia_total':respuesta, 'ganancia_promedio':respuesta}
-
-# @app.get('/peliculas_pais/{pais}')
-# def peliculas_pais(pais:str):
-#     '''Ingresas el pais, retornando la cantidad de peliculas producidas en el mismo'''
-#     return {'pais':pais, 'cantidad':respuesta}
-
-# @app.get('/productoras_exitosas/{productora}')
-# def productoras_exitosas(productora:str):
-#     '''Ingresas la productora, entregandote el revunue total y la cantidad de peliculas que realizo '''
-#     return {'productora':productora, 'revenue_total': respuesta,'cantidad':respuesta}
-
-
-# @app.get('/get_director/{nombre_director}')
-# def get_director(nombre_director:str):
-#     ''' Se ingresa el nombre de un director que se encuentre dentro de un dataset debiendo devolver el éxito del mismo medido a través del retorno. 
-#     Además, deberá devolver el nombre de cada película con la fecha de lanzamiento, retorno individual, costo y ganancia de la misma. En formato lista'''
-#     return {'director':nombre_director, 'retorno_total_director':respuesta, 
-#     'peliculas':respuesta, 'anio':respuesta,, 'retorno_pelicula':respuesta, 
-#     'budget_pelicula':respuesta, 'revenue_pelicula':respuesta}'''
