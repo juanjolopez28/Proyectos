@@ -22,7 +22,8 @@ La propuesta se organiza de la siguiente manera:
 - EDA (Exploratory Data Analysis): En este proceso se analizaron las diversas relaciones entre las variables de nuestra Data.
 - Dashboard: Los datos son importados desde nuestra base de datos a Power BI para realizar un dashboard con las graficas mas importantes y los KPI's propuestos.
 
-![Pipeline Propuesta](/Assets/PIPELINE.jpg "Pipeline Propuesta")
+![Pipeline Propuesta](./Assets/PIPELINE.jpg "Pipeline Propuesta")
+
 
 
 ---
