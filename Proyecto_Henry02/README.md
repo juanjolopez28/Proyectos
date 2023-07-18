@@ -62,7 +62,7 @@ Para el análsis exploratorio de datos se utilizó en los archivos CSVs **_sinID
 ---
 
 ### 2.3 Dashboard
-- KPIs: Se indentificaron 03 KPIs que pasamos a describir:
+En la siguiente imagen se describe el dashboard utilizado
 
-
+![Dashboard](./Assets/tablero.png "Dashboard")
 
