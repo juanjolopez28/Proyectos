@@ -18,18 +18,51 @@ En este contexto, una empresa prestadora de servicios de telecomunicaciones me e
 
 ## 2. PROPUESTA
 La propuesta se organiza de la siguiente manera:
-- ETL(Extract, transform, and load): Los datos solicitados por la API exportados como CSVs, y luego se hace la limpieza o el preprocesamiento de los datos para que sean data util, estos datos son insertados a nuestra base de datos que se encuentra en nuestro servidor WSL (windows subsystem for linux).
-- EDA (Exploratory Data Analysis): En este proceso se analizaron las diversas relaciones entre las variables de nuestra Data.
-- Dashboard: Los datos son importados desde nuestra base de datos a Power BI para realizar un dashboard con las graficas mas importantes y los KPI's propuestos.
+- **ETL(Extract, transform, and load):** Los datos son solicitados por medio de la API y exportados como archivos CSVs (Comma Separated Values), luego se hace la limpieza o el preprocesamiento de los datos para que sean data útil, estos datos son insertados a nuestra base de datos que se encuentra en nuestro servidor WSL (windows subsystem for linux).
+- **EDA (Exploratory Data Analysis):** En este proceso se analizaron las diversas relaciones entre las variables de nuestra Data.
+- **Dashboard**: Los datos son importados desde nuestra base de datos a Power BI para realizar un dashboard con las gráficas más importantes y los KPI's propuestos.
+
+El proceso de la propuesta de detalla en la siguiente imagen: 
 
 ![Pipeline Propuesta](./Assets/PIPELINE.jpg "Pipeline Propuesta")
 
+> :warning: **Warning:** Es importante remarcar que los datos utilizados solo cotemplan hasta el 1er trimestre del año 2022, debido a que el API no proporcionaba todos los datasets.
 
+
+### 2.1 ETL
+Los datasets proporcionados por la API (<a href="https://datosabiertos.enacom.gob.ar/dashboards/20000/acceso-a-internet/" target="_blank">datasets</a>) fueron descargados mediante un script de python [API Request](./API_request.ipynb), por medio del cual se fue consultando la información que se usará en el proceso de análisis, luego los datos fueron guardados en archivos csv en dos tipos estos archivos se encuentra en la carpeta <font color="red">Datasets</font> :
+- Con ID (para la base de datos):
+    - tabla_trimes.csv: Csv en el formato para agregarse a la Base de datos con información de internet basado en      promedios trimestrales
+    - tabla_provincias:Csv en el formato para agregarse a la Base de datos con información de internet basado en las provincias
+    - tabla_provincias: Csv en el formato para agregarse a la Base de datos con información de internet basado en las localidades
+   
+- Sin ID (para el EDA):
+    - datos_trimes_sinID.csv: Información de internet basado en promedios trimestrales
+    - datos_localidades_sinID:Información de internet sobre las localidades
+    - datos_provincias_sinID: Información de internet sobre las provincias
+
+
+> :memo: **Nota:** en el proceso de transformación se elimaron y agregaron columnas, se arreglaron formatos de datos incompletos, se transformaron a tipos de datos correctos, y se unieron para facilidades de manipulación de la información, todo este proceso se detalla en el archivo: [ETL](./ETL.ipynb)
 
 ---
-### 2.1 ETL
 
 ### 2.2 EDA
+Para el análsis exploratorio de datos se utilizó en los archivos CSVs **_sinID** , por medio del cual se llegaron a algunas conclusiones importantes (solo detallaremos 02):
+
+> :bulb: **Tip:** Recuerda que el EDA a más a detalle lo encontrarás en el archivo [EDA.ipynb](./EDA.ipynb) 
+
+- **Relacion entre año y rango de velocidad:** *Podemos observar que a medida que pasan los años los rango de velocidad de 1 mbps a 6mbps decrece y el rango de mas de 30mbps aumenta*
+
+![Relacion entre año y rango de velocidad](./Assets/conectividaxrangoxanio.png "Relacion entre año y rango de velocidad")
+
+- **Relacion entre año, provincia y Mbps (Media de bajada):** *Podemos observar que a medida que pasan los años la media de bajada aumenta por cada provincia, esto debido a las exigencias de cada año respecto a la velocidad, es importante tomar en consideración la población.*
+
+![Relacion entre año, provincia y Mbps (Media de bajada)](./Assets/localidadxanioxmediadebajada.png "Relacion entre año, provincia y Mbps (Media de bajada)")
+
+---
 
 ### 2.3 Dashboard
+- KPIs: Se indentificaron 03 KPIs que pasamos a describir:
+
+
 
