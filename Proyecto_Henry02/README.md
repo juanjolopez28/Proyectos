@@ -62,7 +62,11 @@ Para el análsis exploratorio de datos se utilizó en los archivos CSVs **_sinID
 ---
 
 ### 2.3 Dashboard
-En la siguiente imagen se describe el dashboard utilizado
+En la siguiente se muestra el dashboard implementado teniendo en consideración las indicaciones de diseño del patrón Z:
 
-![Dashboard](./Assets/tablero.png "Dashboard")
+![Dashboard](./Assets/tablero_1.png "Dashboard")
 
+Los Kpis identificados fueron:
+> - KPI 1: El objetivo es aumentar los servicios de internet respecto Mbps (media de bajada) en un 20% a nivel nacional, finalizando el año, considerando la tendencia de los anteriores años.
+> - KPI 2: El objetivo es aumentar los servicios de internet por fibra óptica en un 25% a nivel nacional, finalizando el año, considerando la tendencia de los anteriores años.
+> - KPI 3: El objetivo es aumentar los servicios de internet de velocidad mínima de 30mbps en un 20% a nivel nacional, finalizando el año, considerando la tendencia de los anteriores años.
